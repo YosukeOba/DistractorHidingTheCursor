@@ -20,10 +20,9 @@ mci "open \""+failureMusicFile+"\" alias failure"
 currentDir = dir_cur
 
 
-participant = 2
+participant = 100
 displaySize = 23.8
 
-isFirstStart = 0
 isStart = 0
 startTime = 0
 
@@ -44,19 +43,13 @@ dim As,2
 As = 10*temp2, 20*temp2
 
 dim Is,3
-Is = 0.0,1.2*temp2,2.4*temp2
+Is = 0.0,0.6*temp2,1.2*temp2,1.8*temp2,10000.0
 
-dim Ps,2
-Ps = 0,1
+dim Ss,1
+Ss = 1
 
-dim Ss,2
-Ss = 0,1
-
-dim DHs,3
-DHs = 0.6*temp3,1.2*temp3,1.8*temp3
-
-dim DWs,3
-DWs = 0.6*temp2,1.2*temp2,1.8*temp2
+dim Ds,2
+Ds = 0,1
 
 /*dim Ws,1
 Ws = 15
@@ -69,7 +62,7 @@ Ps = 0,1*/
 
 countBlock = 10
 
-dim tasks,length(Ws)*length(As)*length(Is)*length(Ps)*length(Ss)
+dim tasks,length(Ws)*length(As)*length(Is)*length(Ss)*length(Ds)
 gosub *taskShuffle
 
 cursorSize = 10
@@ -95,14 +88,17 @@ blockCounter = 0
 A = 0
 W = 0
 I = 0
-P = 0
-H = notchHeight
 S = 0
+H = notchHeight
+D = 0
 
 error = 0
 
+//終了ターゲットの左上座標
 dim target,2
 target = 0,0
+
+//開始ターゲットの左上座標
 dim startTarget,2
 startTarget = 0,0
 
@@ -119,9 +115,6 @@ lastTime=timeGetTime()
 	
 	if(isStart == -1){
 		gosub *taskDataSave
-	} else :if(isFirstStart == -1){
-		dummyMouseX = startTarget(0)
-		dummyMouseY = startTarget(1)
 	}
 
 	onclick gosub *click
@@ -150,11 +143,15 @@ lastTime=timeGetTime()
 	pos 0,90
 	mes "A = "+As(0)+","+As(1)
 	pos 0,120
-	mes "W = "+Ws(0)+","+Ws(1)+","+Ws(2)
+	mes "W = "+Ws(0)+","+Ws(1)
 	pos 0,150
 	mes "H = "+H
 	pos 0,180
 	mes "I = "+Is(0)+","+Is(1)+","+Is(2)+","+Is(3)+","+Is(4)
+	pos 0,210
+	mes "S = "+S
+	pos 0,240
+	mes "D = "+D
 	
 	redraw 1
 	lastTime=timeGetTime()
@@ -166,15 +163,11 @@ lastTime=timeGetTime()
 	goto *main
 
 *click
-	if(sqrt(pow(dummyMouseX-startTarget(0),2)+pow(dummyMouseY-startTarget(1),2))<125 && isFirstStart == 0 && isStart == 0){
-		isFirstStart = -1
-	}else :if(isFirstStart == -1 && isStart == 0){
-		dummyMouseX = startTarget(0)
-		dummyMouseY = startTarget(1)
+	if(startTarget(0)<=dummyMouseX && dummyMouseX<=startTarget(0)+W && startTarget(1)<=dummyMouseY && dummyMouseY<=H && isStart == 0){
 		gosub *start
 		notesel taskData
 		gosub *taskDataSave
-	} else :if(isFirstStart == -1 && isStart == -1){
+	} else :if(isStart == -1){
 		if(target(0)<=dummyMouseX && dummyMouseX<=target(0)+W && target(1)<=dummyMouseY && dummyMouseY<=H){
 			error = 0
 			mci "play success from 0"
@@ -200,31 +193,27 @@ lastTime=timeGetTime()
 	A = As(e \ length(As))
 	W = Ws((e/length(As)) \ length(Ws))
 	I = Is((e/length(As)/length(Ws)) \ length(Is))
-	P = Ps((e/length(As)/length(Ws)/length(Is)) \ length(Ps))
-	S = Ss( (e/length(As)/length(Ws)/length(Is)/length(Ps)) \ length(Ss) )
+	S = Ss((e/length(As)/length(Ws)/length(Is)) \ length(Ss))
+	D = Ds( (e/length(As)/length(Ws)/length(Is)/length(Ss)) \ length(Ds))
 
-	target(0) = ginfo(20)/2 + A/2 - W/2
-	target(1) = 0
-	startTarget(0) = ginfo(20)/2 - A/2
-	if(S == 0){
+	if(D == 0){
+		startTarget(0) = ginfo(20)/2 - A/2 - W/2
 		startTarget(1) = 0
-	} else {
-		startTarget(1) = int(H)
+		target(0) = ginfo(20)/2 + A/2 - W/2
+		target(1) = 0
+	} else: if(D == 1){
+		startTarget(0) = ginfo(20)/2 + A/2 - W/2
+		startTarget(1) = 0
+		target(0) = ginfo(20)/2 - A/2 - W/2
+		target(1) = 0
 	}
 	
 	return
 
 *drawStart
 	if(isStart == 0){
-		if(startTarget(0)<=dummyMouseX && dummyMouseX<=startTarget(0)+W && startTarget(1)<=dummyMouseY && dummyMouseY<=startTarget(1)+H){
-			color 234,145,152
-		} else {
-			color 234,145,152
-		}
-		circle startTarget(0)-125,startTarget(1)-125,startTarget(0)+125,startTarget(1)+125
-		color 255,0,0
-		line startTarget(0)-(125.0/sqrt(2)),startTarget(1)-125.0/sqrt(2),startTarget(0)+125.0/sqrt(2),startTarget(1)+(125.0/sqrt(2))
-		line startTarget(0)-(125.0/sqrt(2)),startTarget(1)+(125.0/sqrt(2)),startTarget(0)+125.0/sqrt(2),startTarget(1)-125.0/sqrt(2)
+		color 234,145,152
+		boxf startTarget(0),startTarget(1),startTarget(0)+W,H
 	}
 	return
 
@@ -237,7 +226,6 @@ lastTime=timeGetTime()
 
 *save
 	isStart = 0
-	isFirstStart = 0
 	tempTime = timeGetTime()-startTime
 	gosub *taskDataSave
 	chdir currentDir
@@ -248,7 +236,7 @@ lastTime=timeGetTime()
 	taskData = ""
 	
 	notesel data
-	noteadd ""+participant+","+A+","+W+","+I+","+P+","+S+","+tempTime+","+error+","+blockCounter+","+taskCounter
+	noteadd ""+participant+","+A+","+W+","+I+","+S+","+D+","+tempTime+","+error+","+blockCounter+","+taskCounter
 
 	taskCounter++
 	if (length(tasks) <= taskCounter){
@@ -260,20 +248,16 @@ lastTime=timeGetTime()
 	return
 
 *drawTarget
-	if(target(0)<=dummyMouseX && dummyMouseX<=target(0)+W && target(1)<=dummyMouseY && dummyMouseY<=H && isStart == -1){
-		color 0,255,0
-	} else {
-		color 0,255,0
-	}
+	color 0,255,0
 	boxf target(0),target(1),target(0)+W,target(1)+H
 	return
 
 *drawNotch
 	color 0,0,0
-	if(P=0){
+	if(D == 0){
 		boxf target(0) - notchWidth - I, 0, target(0) - I, notchHeight
-	} else {
-		boxf target(0) + W + I, 0, target(0) + W + I + notchWidth, notchHeight
+	} else: if(D == 1){
+		boxf target(0) + W + I, 0, target(0) + W + notchWidth + I, notchHeight
 	}
 	return
 
@@ -292,6 +276,31 @@ lastTime=timeGetTime()
 	} else :if(dummyMouseY >= ginfo(21)){
 		dummyMouseY = ginfo(21)-1
 	}
+
+	if(S == 1){
+		if(D == 0){
+			if(target(0) - notchWidth - I < dummyMouseX && dummyMouseX < target(0) - I && dummyMouseY < notchHeight){
+				if(abs(dummyMouseX - (target(0)-notchWidth - I)) < abs(dummyMouseX - (target(0) - I)) && abs(dummyMouseX - (target(0)-notchWidth - I)) < abs(dummyMouseY - notchHeight)){
+					dummyMouseX = target(0)-notchWidth - I
+				} else: if(abs(dummyMouseX - (target(0) - I)) < abs(dummyMouseX - (target(0)-notchWidth - I)) && abs(dummyMouseX - (target(0) - I)) < abs(dummyMouseY - notchHeight)) {
+					dummyMouseX = target(0) - I
+				} else {
+					dummyMouseY = notchHeight
+				}
+			}
+		} else {
+			if(target(0) + W + I < dummyMouseX && dummyMouseX < target(0) + W + notchWidth + I && dummyMouseY < notchHeight){
+				if(abs(dummyMouseX - (target(0) + W + I)) < abs(dummyMouseX - (target(0) + W + notchWidth + I)) && abs(dummyMouseX - (target(0) + W + I)) < abs(dummyMouseY - notchHeight)){
+					dummyMouseX = target(0) + W + I
+				} else: if(abs(dummyMouseX - (target(0) + W + notchWidth + I)) < abs(dummyMouseX - (target(0) + W + I)) && abs(dummyMouseX - (target(0) + W + notchWidth + I)) < abs(dummyMouseY - notchHeight)){
+					dummyMouseX = target(0) + W + notchWidth + I
+				} else {
+					dummyMouseY = notchHeight
+				}
+			}
+		}
+	}
+	
 	
 	gmode 4,12,20,256
 	color 255,0,0
@@ -302,5 +311,5 @@ lastTime=timeGetTime()
 	return
 
 *taskDataSave
-	noteadd ""+participant+","+A+","+W+","+I+","+P+","+S+","+timeGetTime()+","+dummyMouseX+","+dummyMouseY+","+realMouseX+","+realMouseY+","+error+","+blockCounter+","+taskCounter
+	noteadd ""+participant+","+A+","+W+","+I+","+S+","+D+","+timeGetTime()+","+dummyMouseX+","+dummyMouseY+","+realMouseX+","+realMouseY+","+error+","+blockCounter+","+taskCounter
 	return
