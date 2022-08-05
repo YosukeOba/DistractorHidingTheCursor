@@ -45,11 +45,11 @@ As = 10*temp2, 20*temp2
 dim Is,3
 Is = 0.0,0.6*temp2,1.2*temp2,1.8*temp2,10000.0
 
-dim Ss,1
-Ss = 1
+dim Ss,3
+Ss = 0,1,2
 
-dim Ds,2
-Ds = 0,1
+dim Ds,1
+Ds = 0
 
 /*dim Ws,1
 Ws = 15
@@ -60,7 +60,7 @@ Is = 0
 dim Ps,2
 Ps = 0,1*/
 
-countBlock = 10
+countBlock = 20
 
 dim tasks,length(Ws)*length(As)*length(Is)*length(Ss)*length(Ds)
 gosub *taskShuffle
@@ -288,11 +288,13 @@ lastTime=timeGetTime()
 		dummyMouseY = ginfo(21)-1
 	}
 
+	if(S == 2){
+
 	if(dummyMouseX != pdummyMouseX && dummyMouseY != pdummyMouseY){
 		color 0,0,0
 		a = (0.0+dummyMouseY - pdummyMouseY)/(0.0+dummyMouseX - pdummyMouseX)
-		pos 0,270
-		mes "a = "+ a
+		//pos 0,270
+		//mes "a = "+ a
 		b = a * -pdummyMouseX + pdummyMouseY
 
 		if(a * notch(0) + b <= notchHeight && pdummyMouseX <= notch(0) && notch(0) <= dummyMouseX){
@@ -358,6 +360,8 @@ lastTime=timeGetTime()
 		} else: if(dummyMouseX <= notch(0) + notchWidth && notch(0) + notchWidth <= pdummyMouseX && dummyMouseY <= notchHeight){
 			dummyMouseX = notch(0) + notchWidth + 1
 		}
+	}
+
 	}
 
 	
