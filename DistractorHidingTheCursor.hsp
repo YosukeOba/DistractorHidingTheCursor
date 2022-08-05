@@ -71,6 +71,9 @@ cursorSize = 10
 
 mouse ginfo(20)/2, ginfo(21)/2
 
+
+pdummyMouseX = mousex
+pdummyMouseY = mousey
 dummyMouseX=mousex
 dummyMouseY=mousey
 realMouseX=mousex
@@ -101,6 +104,10 @@ target = 0,0
 //開始ターゲットの左上座標
 dim startTarget,2
 startTarget = 0,0
+
+//ノッチの左上座標
+dim notch,2
+notch = 0,0
 
 lastTime=timeGetTime()
 
@@ -254,11 +261,15 @@ lastTime=timeGetTime()
 
 *drawNotch
 	color 0,0,0
+	
 	if(D == 0){
-		boxf target(0) - notchWidth - I, 0, target(0) - I, notchHeight
+		notch(0) = target(0) - notchWidth - I
+		notch(1) = 0
 	} else: if(D == 1){
-		boxf target(0) + W + I, 0, target(0) + W + notchWidth + I, notchHeight
+		notch(0) = target(0) + W + I
+		notch(1) = 0
 	}
+	boxf notch(0),notch(1),notch(0)+notchWidth,notch(1)+notchHeight
 	return
 
 *drawCursor
@@ -277,30 +288,82 @@ lastTime=timeGetTime()
 		dummyMouseY = ginfo(21)-1
 	}
 
-	if(S == 1){
-		if(D == 0){
-			if(target(0) - notchWidth - I < dummyMouseX && dummyMouseX < target(0) - I && dummyMouseY < notchHeight){
-				if(abs(dummyMouseX - (target(0)-notchWidth - I)) < abs(dummyMouseX - (target(0) - I)) && abs(dummyMouseX - (target(0)-notchWidth - I)) < abs(dummyMouseY - notchHeight)){
-					dummyMouseX = target(0)-notchWidth - I
-				} else: if(abs(dummyMouseX - (target(0) - I)) < abs(dummyMouseX - (target(0)-notchWidth - I)) && abs(dummyMouseX - (target(0) - I)) < abs(dummyMouseY - notchHeight)) {
-					dummyMouseX = target(0) - I
-				} else {
-					dummyMouseY = notchHeight
-				}
+	if(dummyMouseX != pdummyMouseX && dummyMouseY != pdummyMouseY){
+		color 0,0,0
+		a = (0.0+dummyMouseY - pdummyMouseY)/(0.0+dummyMouseX - pdummyMouseX)
+		pos 0,270
+		mes "a = "+ a
+		b = a * -pdummyMouseX + pdummyMouseY
+
+		if(a * notch(0) + b <= notchHeight && pdummyMouseX <= notch(0) && notch(0) <= dummyMouseX){
+			if(dummyMouseY < notchHeight){
+				dummyMouseX = notch(0) - 1
+			} else {
+				dummyMouseX = dummyMouseX - ((notchHeight - b)/a - notch(0))
+				complementX = notch(0) - 1
+				complementY = a * notch(0) + b
+				gosub *taskDataSaveComplement
+				complementX = notch(0) - 1
+				complementY = notchHeight + 1
+				gosub *taskDataSaveComplement
 			}
-		} else {
-			if(target(0) + W + I < dummyMouseX && dummyMouseX < target(0) + W + notchWidth + I && dummyMouseY < notchHeight){
-				if(abs(dummyMouseX - (target(0) + W + I)) < abs(dummyMouseX - (target(0) + W + notchWidth + I)) && abs(dummyMouseX - (target(0) + W + I)) < abs(dummyMouseY - notchHeight)){
-					dummyMouseX = target(0) + W + I
-				} else: if(abs(dummyMouseX - (target(0) + W + notchWidth + I)) < abs(dummyMouseX - (target(0) + W + I)) && abs(dummyMouseX - (target(0) + W + notchWidth + I)) < abs(dummyMouseY - notchHeight)){
-					dummyMouseX = target(0) + W + notchWidth + I
-				} else {
-					dummyMouseY = notchHeight
+		}
+
+		if(a * (notch(0)+notchWidth) + b <= notchHeight && dummyMouseX <= notch(0) + notchWidth && notch(0) + notchWidth <= pdummyMouseX){
+			if(dummyMouseY < notchHeight){
+				dummyMouseX = notch(0) + notchWidth + 1
+			} else {
+				dummyMouseX = dummyMouseX + (((notchHeight - b)/a) - (notch(0)+notchWidth))
+				complementX = notch(0) + notchWidth + 1
+				complementY = a * (notch(0)+notchWidth) + b
+				gosub *taskDataSaveComplement
+				complementX = notch(0) + notchWidth + 1
+				complementY = notchHeight + 1
+				gosub *taskDataSaveComplement
+			}
+		}
+
+		if(notch(0) <= (notchHeight - b)/a && (notchHeight - b)/a <= notch(0) + notchWidth && notchHeight <= pdummyMouseY && dummyMouseY <= notchHeight){
+			if(notch(0) <= dummyMouseX && dummyMouseX <= notch(0)+notchWidth){
+				dummyMouseY = notchHeight+1
+			} else {
+				if(dummyMouseX <= notch(0)){
+					dummyMouseY = dummyMouseY + (notchHeight - (a * notch(0) + b))
+					complementX = (notchHeight - b)/a
+					complementY = notchHeight + 1
+					gosub *taskDataSaveComplement
+					complementX = notch(0) - 1
+					complementY = notchHeight + 1
+					gosub *taskDataSaveComplement
+				} else: if(notch(0)+notchWidth <= dummyMouseX){
+					dummyMouseY = dummyMouseY + (notchHeight - (a * (notch(0)+notchWidth) + b))
+					complementX = (notchHeight - b)/a
+					complementY = notchHeight + 1
+					gosub *taskDataSaveComplement
+					complementX = notch(0) + notchWidth + 1
+					complementY = notchHeight + 1
+					gosub *taskDataSaveComplement
 				}
 			}
 		}
+
+		
+	} else: if(dummyMouseX == pdummyMouseX && dummyMouseY != pdummyMouseY) {
+		if(notch(0) <= dummyMouseX && dummyMouseX <= notch(0) + notchWidth && notchHeight <= pdummyMouseY && dummyMouseY <= notchHeight){
+			dummyMouseY = notchHeight + 1
+		}
+	} else: if(dummyMouseY == pdummyMouseY && dummyMouseX != pdummyMouseX){
+		if(pdummyMouseX <= notch(0) && notch(0) <= dummyMouseX && dummyMouseY <= notchHeight){
+			dummyMouseX = notch(0) - 1
+		} else: if(dummyMouseX <= notch(0) + notchWidth && notch(0) + notchWidth <= pdummyMouseX && dummyMouseY <= notchHeight){
+			dummyMouseX = notch(0) + notchWidth + 1
+		}
 	}
+
 	
+	
+	pdummyMouseX = dummyMouseX
+	pdummyMouseY = dummyMouseY
 	
 	gmode 4,12,20,256
 	color 255,0,0
@@ -312,4 +375,11 @@ lastTime=timeGetTime()
 
 *taskDataSave
 	noteadd ""+participant+","+A+","+W+","+I+","+S+","+D+","+timeGetTime()+","+dummyMouseX+","+dummyMouseY+","+realMouseX+","+realMouseY+","+error+","+blockCounter+","+taskCounter
+	return
+
+
+*taskDataSaveComplement
+	if(isStart == -1){
+		noteadd ""+participant+","+A+","+W+","+I+","+S+","+D+","+timeGetTime()+","+complementX+","+complementY+","+realMouseX+","+realMouseY+","+error+","+blockCounter+","+taskCounter
+	}
 	return
