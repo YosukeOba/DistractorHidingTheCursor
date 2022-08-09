@@ -20,8 +20,8 @@ mci "open \""+failureMusicFile+"\" alias failure"
 currentDir = dir_cur
 
 
-participant = 100
-displaySize = 23.8
+participant = 51
+displaySize = 17.3
 
 isStart = 0
 startTime = 0
@@ -36,17 +36,17 @@ temp3 = (ginfo(21) / display(1))
 
 notchWidth = 3.7 * temp2
 notchHeight = 0.6 * temp3
-dim Ws,3
+dim Ws,2
 Ws = 0.6*temp2, 2.3*temp2
 
 dim As,2
 As = 10*temp2, 20*temp2
 
-dim Is,3
+dim Is,5
 Is = 0.0,0.6*temp2,1.2*temp2,1.8*temp2,10000.0
 
-dim Ss,3
-Ss = 0,1,2
+dim Ss,1
+Ss = 2
 
 dim Ds,1
 Ds = 0
@@ -60,7 +60,7 @@ Is = 0
 dim Ps,2
 Ps = 0,1*/
 
-countBlock = 20
+countBlock = 60
 
 dim tasks,length(Ws)*length(As)*length(Is)*length(Ss)*length(Ds)
 gosub *taskShuffle
@@ -86,7 +86,7 @@ LoadCursorFromFile refstr
 SetClassLong hwnd, -12, stat
 
 taskCounter = 0
-blockCounter = 0
+blockCounter = 40
 
 A = 0
 W = 0
