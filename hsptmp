@@ -20,7 +20,7 @@ mci "open \""+failureMusicFile+"\" alias failure"
 currentDir = dir_cur
 
 
-participant = 100
+participant = 64
 displaySize = 17.3
 
 isStart = 0
@@ -36,7 +36,7 @@ temp3 = (ginfo(21) / display(1))
 
 notchWidth = 3.7 * temp2
 notchHeight = 0.6 * temp3
-dim Ws,2
+/*dim Ws,2
 Ws = 0.6*temp2, 2.3*temp2
 
 dim As,2
@@ -49,16 +49,22 @@ dim Ss,1
 Ss = 2
 
 dim Ds,1
-Ds = 0
+Ds = 0*/
 
-/*dim Ws,1
-Ws = 15
-dim As,1
-As = 300
-dim Is,1
-Is = 0
-dim Ps,2
-Ps = 0,1*/
+dim Ws,1
+Ws = 0.6*temp2
+
+dim As,
+As = 20*temp2
+
+dim Is,3
+Is = 0.0,1.2*temp2,10000.0
+
+dim Ss,1
+Ss = 2
+
+dim Ds,1
+Ds = 0
 
 countBlock = 60
 
