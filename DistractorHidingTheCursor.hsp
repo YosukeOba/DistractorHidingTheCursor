@@ -20,7 +20,7 @@ mci "open \""+failureMusicFile+"\" alias failure"
 currentDir = dir_cur
 
 
-participant = 2
+participant = 3
 displaySize = 24.5
 
 isStart = 0
@@ -46,7 +46,7 @@ dim Is,3
 Is = 0.0,1.2*temp2,10000.0
 
 dim Ss,1
-Ss = 2
+Ss = 0
 
 dim Ds,1
 Ds = 0

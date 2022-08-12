@@ -20,7 +20,7 @@ mci "open \""+failureMusicFile+"\" alias failure"
 currentDir = dir_cur
 
 
-participant = 1
+participant = 2
 displaySize = 24.5
 
 isStart = 0
@@ -297,7 +297,7 @@ lastTime=timeGetTime()
 		dummyMouseY = ginfo(21)-1
 	}
 
-	if(S == 2){
+	if(S == 2 && isStart == -1){
 
 	if(dummyMouseX != pdummyMouseX && dummyMouseY != pdummyMouseY){
 		color 0,0,0
