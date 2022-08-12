@@ -46,7 +46,7 @@ dim Is,3
 Is = 0.0,1.2*temp2,10000.0
 
 dim Ss,1
-Ss = 1
+Ss = 2
 
 dim Ds,1
 Ds = 0
@@ -66,7 +66,7 @@ Ss = 2
 dim Ds,1
 Ds = 0*/
 
-countBlock = 20
+countBlock = 60
 
 dim tasks,length(Ws)*length(As)*length(Is)*length(Ss)*length(Ds)
 gosub *taskShuffle
@@ -92,7 +92,7 @@ LoadCursorFromFile refstr
 SetClassLong hwnd, -12, stat
 
 taskCounter = 0
-blockCounter = 0
+blockCounter = 40
 
 A = 0
 W = 0
