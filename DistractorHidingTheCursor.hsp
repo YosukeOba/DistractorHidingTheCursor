@@ -120,7 +120,7 @@ lastTime=timeGetTime()
 *main
 	if(countBlock <= blockCounter){
 		notesel data
-		notesave ""+participant+".txt"
+		notesave ""+participant+"_"+S+".txt"
 		end
 	}
 	redraw 0
