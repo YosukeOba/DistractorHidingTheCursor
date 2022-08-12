@@ -20,7 +20,7 @@ mci "open \""+failureMusicFile+"\" alias failure"
 currentDir = dir_cur
 
 
-participant = 1
+participant = 2
 displaySize = 24.5
 
 isStart = 0
@@ -46,7 +46,7 @@ dim Is,3
 Is = 0.0,1.2*temp2,10000.0
 
 dim Ss,1
-Ss = 0
+Ss = 2
 
 dim Ds,1
 Ds = 0
@@ -153,7 +153,7 @@ lastTime=timeGetTime()
 	pos 0,60
 	mes "fps = "+fps
 
-	pos 0,90
+	/*pos 0,90
 	mes "A = "+A
 	//+As(0)+","+As(1)
 	pos 0,120
@@ -167,7 +167,7 @@ lastTime=timeGetTime()
 	pos 0,210
 	mes "S = "+S
 	pos 0,240
-	mes "D = "+D
+	mes "D = "+D*/
 	
 	redraw 1
 	lastTime=timeGetTime()
@@ -297,7 +297,7 @@ lastTime=timeGetTime()
 		dummyMouseY = ginfo(21)-1
 	}
 
-	if(S == 2){
+	if(S == 2 && isStart == -1){
 
 	if(dummyMouseX != pdummyMouseX && dummyMouseY != pdummyMouseY){
 		color 0,0,0
