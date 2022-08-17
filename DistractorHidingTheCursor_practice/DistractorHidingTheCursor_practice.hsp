@@ -20,7 +20,7 @@ mci "open \""+failureMusicFile+"\" alias failure"
 currentDir = dir_cur
 
 
-participant = 4
+participant = 5
 displaySize = 24.5
 
 isStart = 0
