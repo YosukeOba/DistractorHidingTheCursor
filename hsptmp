@@ -20,7 +20,7 @@ mci "open \""+failureMusicFile+"\" alias failure"
 currentDir = dir_cur
 
 
-participant = 6
+participant = 7
 displaySize = 24.5
 
 isStart = 0
@@ -66,7 +66,7 @@ Ss = 2
 dim Ds,1
 Ds = 0*/
 
-countBlock = 60
+countBlock =60
 
 dim tasks,length(Ws)*length(As)*length(Is)*length(Ss)*length(Ds)
 gosub *taskShuffle
