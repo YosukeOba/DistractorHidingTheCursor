@@ -11,8 +11,8 @@ return
 
 screen 0,ginfo(20),ginfo(21),256,0,0
 
-participant = 9
-blocks = 40
+participant = 10
+blocks = 43
 count = 0
 
 *main
